@@ -1,0 +1,230 @@
+import requests
+import json
+from datetime import datetime
+import time
+import os
+import sys
+from openpyxl import load_workbook
+from config import cookies
+import re
+
+nows = datetime.now()
+now = nows.strftime("%Y-%m-%d %H:%M:%S")
+now_ymd = nows.strftime("%Y-%m-%d")
+headers = {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}
+
+
+
+
+
+def pms_list():
+    """查询审核列表接口"""
+    params = {
+        'operateAuthorityFlag': '1',
+    }
+    data = {
+        'bType': '','type': '0','status': '',
+        'billNo': bill_id,'createUser': '曾百威',
+        'auditor': '','replenishMode': '','storeNoStr': '','storeNo': '','orderUnitNoStr': '','orderUnitNo': '','replenishStart': '','replenishEnd': '','deliveryStart': '','deliveryEnd': '',
+        'createTimeStart': '2026-01-01 00:00:00','createTimeEnd': now,
+        'auditTimeStart': '','auditTimeEnd': '','billType': '','refBillType': '','categoryNo': '','havingExist': '','gender': '','season': '','updateTimeStart': '','updateTimeEnd': '',
+        'zoneConfireTimeStart': '','zoneConfireTimeEnd': '','cateName': '','smallCategoryNo': '','supplierNos': '','brandUnitNo': '','auditSourceFlag': '','statusStr': '2,4,100','refBillTypes': '2,1,6,7,8,9,','page': '1','rows': '10','pageNumber': '1','pageSize': '10','pageIndex': '0','orderby': 'asc',
+    }
+    response = requests.post(
+        'https://retail-test.belle.cn/pms/bill_replenish_order/list2.json',
+        params=params,
+        cookies=cookies,
+        headers=headers,
+        data=data,
+    )
+    res_json = json.loads(response.text)
+    data = res_json['rows'][0]
+    # print(res_json['rows'][0])
+    # print(response.text)
+    return data
+
+
+def pms_confirm():
+    """批量审核证明接口K157BH260023"""
+    list_data = pms_list()
+    data = {
+        'rows': json.dumps([list_data], ensure_ascii=False)
+    }
+    response = requests.post(
+        'https://retail-test.belle.cn/pms/bill_replenish_order_dtl_confirm/verification',
+        cookies=cookies,
+        headers=headers,
+        data=data,
+    )
+    print(response.text)
+
+
+def update_status():
+    data = {'idArray': f'["{bill_id}"]','status': '100',}
+    response = requests.post(
+        'https://retail-test.belle.cn/pms/bill_replenish_order/updateStatusById',
+        cookies=cookies,
+        headers=headers,
+        data=data,
+    )
+    print(response.text)
+
+
+def pms_purchase_order_generation(bill_id):
+    """批量生成的查询Item和store接口"""
+    data = {
+    'refBillType': '2', 'orderRepairStart': '2025-07-08', 'orderRepairEnd': '', 'orderUnitNos': '', 'formalTempNo': '0', 'gender': '', 'brandNo': 'BL01', 'brandNoSearch': 'BL01',
+        'companyNo': '10029', 'businessCompanyCode': 'C04017E', 'contractTemplateNo': 'JSGX20250801000V', 'rootCategoryName': '鞋', 'rootCategoryNo': '01',
+        'barcodeColor': '', 'cateName': '', 'categoryNo': '', 'years': '', 'sellSeason': '', 'supplierNo': '00GL', 'orderType': '',
+        'orderRepairNo': bill_id, 'orderRepairNos': bill_id,
+        'billType': '0', 'storeNameZB': '', 'storeNoZB': '', 'orderUnitNoZB': '', 'meetDate': '2026-01-08', 'deliveryDate': '2026-03-09', 'saStoreNo': '10001',
+        'saStoreNoComb': '东北批发仓', 'saOrderUnitNo': 'HG004', 'saOrderUnitName': '货管单位0004', 'billOrderType': '', 'planDeliveryDate': '', 'planReleaseDate': '',
+        'orderby': 'asc'}
+    # 查询item
+    response_1 = requests.post(
+        'https://retail-test.belle.cn/pms/purchase_order_generation/getOrderOrReplenishItem.json',
+        cookies=cookies,
+        headers=headers,
+        data=data,
+    )
+    res_json_1 = json.loads(response_1.text)
+    item = res_json_1['rows'][0]
+    # 查询store
+    response_2 = requests.post(
+    'https://retail-test.belle.cn/pms/purchase_order_generation/getOrderOrReplenishStore.json',
+    cookies=cookies,
+    headers=headers,
+    data=data,)
+    res_json_2 = json.loads(response_2.text)
+    store = res_json_2['rows'][0]
+    # print(f"Item: {item}")
+    # print(f"Store: {store}")
+    return item,store
+
+# 批量生成
+def purchase_order_generation():
+    """批量生成接口"""
+    all_items = []
+    all_stores = []
+
+    # 遍历所有 bill_id，收集数据
+    # 第一步：先遍历收集所有数据
+    for bill_id in bill_ids:
+        try:
+            item, store = pms_purchase_order_generation(bill_id)
+            if item and store:  # 确保有数据
+                all_items.append(item)
+                all_stores.append(store)
+                print(f"✅ 已收集订补单号: {bill_id}")
+            else:
+                print(f"⚠️  跳过（无数据）: {bill_id}")
+        except Exception as e:
+            print(f"❌ 收集失败退出程序 {bill_id}: {e}")
+            sys.exit(1)  # 完全退出程序，不会回到外层循环
+
+    if not all_items:
+        print("❌ 错误: 没有收集到任何数据")
+        sys.exit(1)
+    # 构建最终的 item 和 store 数组字符串
+    item_str = json.dumps(all_items, ensure_ascii=False)
+    store_str = json.dumps(all_stores, ensure_ascii=False)
+    # print(f"Item: {item_str}")
+    # print(f"Store: {store_str}")
+
+
+    data = {
+        'refBillType': '2','orderRepairStart': '2026-01-01','orderRepairEnd': '','orderUnitNos': '','formalTempNo': '0','gender': '','brandNo': 'BL01','brandNoSearch': 'BL01',
+        'companyNo': '10029','businessCompanyCode': 'C04017E','contractTemplateNo': 'JSGX20250801000V','rootCategoryName': '鞋','rootCategoryNo': '01','barcodeColor': '',
+        'cateName': '','categoryNo': '','years': '','sellSeason': '','supplierNo': '00GL','orderType': '','orderRepairNo': '','billType': '0','storeNameZB': '','storeNoZB': '',
+        'orderUnitNoZB': '','meetDate': '2026-01-08','deliveryDate': '2026-03-09','saStoreNo': '10001','saStoreNoComb': '东北批发仓','saOrderUnitNo': 'HG004',
+        'saOrderUnitName': '货管单位0004','billOrderType': '','planDeliveryDate': '','planReleaseDate': '','sampleOrderFlag': 'true','isSpellBox': '0',
+        'item': item_str,
+        'store': store_str}
+
+    response = requests.post(
+        'https://retail-test.belle.cn/pms/purchase_order_generation/batchGeneration',
+        cookies=cookies,
+        headers=headers,
+        data=data,
+    )
+    # print(response.text)
+    match = re.search(r'B00GLCG\d+', response.text)
+    if match:
+        bill_no = match.group()
+        print(f"生成的采购单号bill_no: {bill_no}")
+    return bill_no
+
+
+
+def search_bill_no():
+    bill_no = purchase_order_generation()
+    params = {'orderFlag': '0',}
+    data = {
+        'billNo': bill_no,
+        'supplierNoS': '','supplierNo': '','supplierName': '','refBillType': '','stockType': '','billType': '','meetDateStart': '',
+        'meetDateEnd': '','searchStatus': '','bfAuditStatus': '','createtmStart': '2025-12-09','createtmEnd': now_ymd,'audittmStart': '','audittmEnd': '','createUserQ': '',
+        'havingExist': '','categroyNo': '','gender': '','wholesaleFlag': '','season': '','confirmStatus': '','styleNo': '','customizeTypes': '0,2',
+        'orderRepairNo': '','bagPartType': '','billOrderType': '','customsDeclarationNo': '','brandNos': '','remindType': '',
+        'page': '1','rows': '10','pageNumber': '1','pageSize': '10','pageIndex': '0','orderby': 'asc',}
+    # 查询bill_no的id
+    response_1 = requests.post(
+        'https://retail-test.belle.cn/pms/bill_purchase_order/selectPurchaseOrder',
+        params=params,
+        cookies=cookies,
+        headers=headers,
+        data=data,
+    )
+    # print(response_1.text)
+    res_json_1 = json.loads(response_1.text)
+    bill_no_id = res_json_1['rows'][0]['id']
+    print(f"采购单号bill_no_id: {bill_no_id}")
+
+    data = {'billNos': bill_no}
+    response_2 = requests.post(
+        'https://retail-test.belle.cn/pms/bf_purchase_setting/getInfoByBillNos',
+        cookies=cookies,
+        headers=headers,
+        data=data,
+    )
+    # print(response_2.text)
+    return bill_no_id
+
+
+
+def batch_audit():
+    """提交审核接口"""
+    bill_no_id = search_bill_no()
+    data = {
+        'batchAudit': '1',
+        'checks': f'["{bill_no_id}"]',
+    }
+
+    response = requests.post(
+        'https://retail-test.belle.cn/pms/bill_purchase_order/batchAudit',
+        cookies=cookies,
+        headers=headers,
+        data=data,
+    )
+    print(f"采购订单" + response.json()['msg'])
+
+
+# 使用方法，把批量导入生成的订补单号复制到raw_data里面，第一个三双引号右边要有值。还要复制一下cookie过来到config文件里。从谷歌浏览器复制出来的copy as cURL(bash)
+# 到这个网址里转换一下https://curlconverter.com/python/，复制出的cookie到config文件里
+
+"""批量导入时获得的单据编码换到下面的值里面"""
+raw_data = """I271BH260007
+D029BH260007
+D057BH260012
+"""
+
+bill_ids = raw_data.splitlines() # 使用 splitlines() 分割成列表
+
+for bill_id in bill_ids:
+    """先全部审核，再批量生成"""
+    pms_confirm() # 查询审核获取值
+    update_status() # 单个订补单号进行审核
+    # pms_purchase_order_generation() # 批量生成的查询接口
+    # purchase_order_generation() # 批量生成接口
+
+for bill_id in bill_ids:
+    batch_audit() # 提交审核接口
