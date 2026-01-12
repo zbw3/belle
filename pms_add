@@ -5,7 +5,7 @@ import time
 import os
 import sys
 from openpyxl import load_workbook
-from config import cookies
+from pms_config import cookies
 import re
 
 nows = datetime.now()
