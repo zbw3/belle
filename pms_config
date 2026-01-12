@@ -1,0 +1,16 @@
+# 复制pms的cookie到cookie_str这里，每次直接加个单引号和把之前的删掉
+
+cookie_str = 'INGRESSCOOKIE=1767177591.565.458003.65899|1c826fea5da38525aac65b57b7924287; _scope=1434bab6fbf7a000; JSESSIONID=5F6921C0896C3ABBC10F260B2DE5BCD0; _ati=7455750165839; belle_language=zhCn; cdc_session_cookie=NjVlN2I2MjUtZTEyMi00YjY1LTlhYzMtYjU0OGE5ZTE2ZjAx; store_key=-1; session_user=eyJzZXNzaW9uX3VzZXIiOiJ7XCJ1c2VyaWRcIjpudWxsLFwidXNlcm5hbWVcIjpudWxsLFwibG9n%0D%0AaW5OYW1lXCI6bnVsbCxcIm1vYmlsZVBob25lXCI6bnVsbCxcInRlbFBob25lXCI6bnVsbCxcImVt%0D%0AYWlsXCI6bnVsbCxcInN0YXRlXCI6bnVsbCxcImNhdGVnb3J5XCI6bnVsbCxcIm9yZ2FuaXpOYW1l%0D%0AXCI6bnVsbCxcIm9yZ2FuaXpOb1wiOm51bGwsXCJnbXRDcmVhdGVcIjpudWxsLFwic3RvcmVUeXBl%0D%0AXCI6bnVsbCxcImFyZWFzeXN0ZW1pZFwiOm51bGwsXCJwYXJlbnRzeXN0ZW1pZFwiOm51bGwsXCJy%0D%0AZWdpb25Ob1wiOm51bGwsXCJvcmdhbk5hbWVcIjpudWxsLFwib3JnYW5Ob1wiOm51bGwsXCJvcmdh%0D%0AbkxldmVsXCI6MCxcIm9yZ2FuVHlwZU5vXCI6bnVsbCxcImF0dHJFeHRcIjp7XCJzc29Vc2VyXCI6%0D%0AXCIlN0IlMjJhdHRyRXh0JTIyJTNBJTdCJTIydXNlck5vJTIyJTNBJTIyMjUxMDk5ODU0JTIyJTJD%0D%0AJTIyaXNTaG9wVXNlciUyMiUzQSUyMjAlMjIlN0QlMkMlMjJhdXRob3JpdHlGbGFnJTIyJTNBMCUy%0D%0AQyUyMmVtcGxveWVlTnVtYmVyJTIyJTNBJTIyMjUxMDk5ODU0JTIyJTJDJTIybG9naW5OYW1lJTIy%0D%0AJTNBJTIyMjUxMDk5ODU0JTIyJTJDJTIybW9iaWxlUGhvbmUlMjIlM0ElMjIxMzQzNDgxNDEyNyUy%0D%0AMiUyQyUyMm9yZ1R5cGVDb2RlJTIyJTNBJTIyT1RUMDA2JTIyJTJDJTIyb3JnYW5MZXZlbCUyMiUz%0D%0AQTIlMkMlMjJvcmdhbkxldmVsTmFtZSUyMiUzQSUyMiVFNiU4MCVCQiVFOSU4MyVBOCUyMiUyQyUy%0D%0AMm9yZ2FuVHlwZU5vJTIyJTNBJTIyVTAxMDEwMSUyMiUyQyUyMnN5c3RlbUNvZGUlMjIlM0ElMjJw%0D%0AbXMlMjIlMkMlMjJ1c2VyaWQlMjIlM0ElMjIyNTEwOTk4NTQlMjIlMkMlMjJ1c2VybmFtZSUyMiUz%0D%0AQSUyMiVFNiU5QiVCRSVFNyU5OSVCRSVFNSVBOCU4MSUyMiU3RFwifSxcImNoZWNrQ29zdFwiOm51%0D%0AbGwsXCJlbnZcIjpudWxsLFwiaXBcIjpudWxsfSIsInJhbmRvbSI6Ii05OTA2MjIyOTleMTc2Nzky%0D%0AMTUzODQ3NiIsInRva2VuIjoiMjZjZGU2ZDNkMTI0YjliN2Q0MzRiMTg2ZmMxOGY5YmEifQ%3D%3D%0D%0A; sensorsdata2015jssdkcross=%7B%22distinct_id%22%3A%22251099854%22%2C%22first_id%22%3A%2219ae370bf57716-04fd78bb19ea824-26061b51-2073600-19ae370bf58131f%22%2C%22props%22%3A%7B%22%24latest_traffic_source_type%22%3A%22%E7%9B%B4%E6%8E%A5%E6%B5%81%E9%87%8F%22%2C%22%24latest_search_keyword%22%3A%22%E6%9C%AA%E5%8F%96%E5%88%B0%E5%80%BC_%E7%9B%B4%E6%8E%A5%E6%89%93%E5%BC%80%22%2C%22%24latest_referrer%22%3A%22%22%7D%2C%22identities%22%3A%22%5Cn%2F1vqr%7B%5Cu0003v%5Cu0003%5Cblp%7C%7Cxvrlvq%2FG%2F%3EFon%3Dns%3Dq%3D%3D%40sF%3A%3Dnnp%40noD%3DD%3EDs%40%3A%3FC%3DC%3EnB%3E%3A%3F%3DD%40C%3D%3D%3A%3EFon%3Dns%3Dq%3D%3ECDD%2F9%2F1vqr%7B%5Cu0003v%5Cu0003%5Cbly%7Ctv%7Blvq%2FG%2F%3FB%3E%3DFFEBA%2F%5Cf%22%2C%22history_login_id%22%3A%7B%22name%22%3A%22%24identity_login_id%22%2C%22value%22%3A%22251099854%22%7D%2C%22%24device_id%22%3A%2219aec229a4d10ab-0fa057a6a9d2e9-26061b51-2073600-19aec229a4e15ca%22%7D; expiry_key=1767933409150'
+
+
+# 将 cookie 字符串转换为字典
+def cookie_str_to_dict(cookie_str):
+    cookie_dict = {}
+    items = cookie_str.split(';')
+    for item in items:
+        if '=' in item:
+            key, value = item.strip().split('=', 1)
+            cookie_dict[key] = value
+    return cookie_dict
+
+cookies = cookie_str_to_dict(cookie_str)
